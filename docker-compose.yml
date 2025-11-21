@@ -12,9 +12,9 @@ services:
     container_name: postgres_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: netuser
-      POSTGRES_PASSWORD: netpass
-      POSTGRES_DB: netdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: movie
     ports:
       - "5432:5432"
     volumes:
