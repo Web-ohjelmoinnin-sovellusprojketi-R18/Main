@@ -1,55 +1,74 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function App() {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const [name, setName] = useState("");
+    const [genre, setGenre] = useState("");
+    const [year, setYear] = useState("");
+    const [results, setResults] = useState([]);
+    const [nowPlaying, setNowPlaying] = useState([]);
 
-  useEffect(() => {
-    async function fetchBooks() {
-      try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/book`);
-        if (!res.ok) throw new Error("Verkkovirhe");
+    const searchMovies = async () => {
+        const res = await fetch(
+            `/api/movies/search?name=${name}&genre=${genre}&year=${year}`
+        );
         const data = await res.json();
-        setBooks(data);
-      } catch (err) {
-        console.error("Virhe haettaessa kirjoja:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchBooks();
-  }, []);
+        setResults(data.results || []);
+    };
 
-  if (loading) return <p>Ladataan kirjoja...</p>;
+    const fetchNowPlaying = async () => {
+        const res = await fetch(`/api/movies/now-playing`);
+        const data = await res.json();
+        setNowPlaying(data.results || []);
+    };
 
-  return (
-    <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h1>Minun Kirjat tietokannassa</h1>
-      {books.length === 0 ? (
-        <p>Ei kirjoja löytynyt.</p>
-      ) : (
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Author</th>
-              <th>ISBN</th>
-            </tr>
-          </thead>
-          <tbody>
-            {books.map((book) => (
-              <tr key={book.id}>
-                <td>{book.name}</td>
-                <td>{book.author}</td>
-                <td>{book.isbn}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    return (
+        <div style={{ padding: "20px", fontFamily: "Arial" }}>
+            <h1>Elokuvasovellus</h1>
 
-      )}
-    </div>
-  );
+            {/* HAKU */}
+            <h2>Haku</h2>
+            <input
+                placeholder="Nimi"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+            />
+            <input
+                placeholder="Genre ID"
+                value={genre}
+                onChange={(e) => setGenre(e.target.value)}
+            />
+            <input
+                placeholder="Julkaisuvuosi"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+            />
+            <button onClick={searchMovies}>Hae</button>
+
+            <div>
+                {results.map((m) => (
+                    <div key={m.id}>
+                        <h3>{m.title}</h3>
+                        <p>{m.release_date}</p>
+                    </div>
+                ))}
+            </div>
+
+            <hr />
+
+            {/* NYT ELOKUVISSA */}
+            <h2>Nyt elokuvissa Suomessa</h2>
+            <button onClick={fetchNowPlaying}>Hae elokuvat</button>
+
+            <div>
+                {nowPlaying.map((m) => (
+                    <div key={m.id}>
+                        <h3>{m.title}</h3>
+                        <p>Ensi-ilta: {m.release_date}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 }
 
 export default App;
