@@ -33,7 +33,7 @@ function App() {
                 onChange={(e) => setName(e.target.value)}
             />
             <input
-                placeholder="Genre ID"
+                placeholder="Genre"
                 value={genre}
                 onChange={(e) => setGenre(e.target.value)}
             />
