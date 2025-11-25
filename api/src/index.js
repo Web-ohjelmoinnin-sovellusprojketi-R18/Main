@@ -2,14 +2,27 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import movieRouter from "./routers/movieRouter.js";
+import userRouter from "./routers/userRouter.js";
 
 const app = express();
 const port = process.env.PORT;
 
-app.use("/api/movies", movieRouter);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use("/api/auth", userRouter);
+app.use("/api/movies", movieRouter);
+
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  const status = err.status || 500;
+
+  res.status(status).json({
+    message: err.message || "Tuntematon palvelinvirhe."
+  });
+});
 
 app.get("/", async (req, res) => {
   res.send("Postgres API esimerkki");
