@@ -36,3 +36,19 @@ CREATE TABLE IF NOT EXISTS account (
     password_hash TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
+
+DROP TABLE IF EXISTS groups;
+
+CREATE TABLE IF NOT EXISTS groups (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    owner_id INTEGER NOT NULL REFERENCES account(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS group_members (
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES account(id) ON DELETE CASCADE,
+    UNIQUE(group_id, user_id)
+);
