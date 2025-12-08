@@ -14,7 +14,6 @@ function App() {
                 <h1>Elokuvasovellus</h1>
 
                 <Routes>
-                    {/* 🔹 Kaikki perustoiminnot samalla sivulla */}
                     <Route
                         path="/"
                         element={

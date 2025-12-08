@@ -40,7 +40,7 @@ export default function Groups({ token }) {
   };
 
   useEffect(() => {
-    fetchGroups();
+    if (token) fetchGroups();
   }, [token]);
 
   return (
@@ -62,23 +62,25 @@ export default function Groups({ token }) {
 
       <h3>Ryhmälista</h3>
       <ul>
-        {groups.map((g) => (
-    <li key={g.id}>
-      <Link to={`/group/${g.id}`}>
-        {g.name}
-      </Link>
-      
-      {token &&
-        g.owner_id === JSON.parse(atob(token.split(".")[1])).id && (
+  {Array.isArray(groups) ? (
+    groups.map(g => (
+      <li key={g.id}>
+        <Link to={`/group/${g.id}`}>{g.name}</Link>
+
+        {token && g.owner_id === JSON.parse(atob(token.split(".")[1])).id && (
           <button
             style={{ marginLeft: "10px", color: "red" }}
             onClick={() => deleteGroup(g.id)}
           >
+            
             Poista
           </button>
         )}
     </li>
-  ))}
+    ))
+  ) : (
+    <p>Ei ryhmiä saatavilla</p>
+  )}
 </ul>
 
       <hr />
