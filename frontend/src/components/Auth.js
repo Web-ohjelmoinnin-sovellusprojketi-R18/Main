@@ -47,6 +47,40 @@ export default function Auth({ token, setToken }) {
     setToken(null);
   };
 
+  const deleteAccount = async () => {
+  if (!window.confirm("Haluatko varmasti poistaa käyttäjätilisi?")) {
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch("http://localhost:3001/api/auth/delete", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Virhe tilin poistamisessa");
+      return;
+    }
+
+    alert("Käyttäjätilisi on poistettu");
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    setToken(null);
+
+  } catch (err) {
+    console.error(err);
+    alert("Palvelinvirhe");
+  }
+};
+
   return (
     <>
       <h2>Rekisteröidy</h2>
@@ -79,6 +113,7 @@ export default function Auth({ token, setToken }) {
       <>
         <p>Kirjautunut sisään ✔</p>
         <button onClick={logout}>Kirjaudu ulos</button>
+        <button onClick={deleteAccount}>Poista käyttäjätili</button>
       </>
     )}
 
