@@ -1,4 +1,3 @@
-// frontend/src/components/ReviewList.js
 import { useEffect, useState } from "react";
 
 function Comments({ reviewId }) {
@@ -12,7 +11,7 @@ function Comments({ reviewId }) {
     try {
       setLoading(true);
       const res = await fetch(`/api/reviews/${reviewId}/comments`);
-      if (!res.ok) throw new Error("Kommenttien haku epäonnistui");
+      if (!res.ok) throw new Error("Haku epäonnistui");
       const data = await res.json();
       setComments(data || []);
     } catch (err) {
@@ -95,7 +94,7 @@ function Comments({ reviewId }) {
 
 export default function ReviewList({ reviews }) {
   if (!reviews || reviews.length === 0) {
-    return <div>Ei vielä arvosteluja – ole ensimmäinen!</div>;
+    return <div>Ei vielä arvosteluja </div>;
   }
 
   return (
@@ -120,8 +119,6 @@ export default function ReviewList({ reviews }) {
             {r.created_at &&
               " · " + new Date(r.created_at).toLocaleDateString("fi-FI")}
           </small>
-
-          {/* Kommentit tälle arvostelulle */}
           <Comments reviewId={r.id} />
         </div>
       ))}

@@ -72,16 +72,9 @@ export default function ReviewForm({ movieId, existingReview, onSaved }) {
     <form onSubmit={handleSubmit} style={{ marginBottom: 24 }}>
       <StarRating value={rating} onChange={setRating} />
 
-      <input
-        style={{ width: "100%", marginTop: 8, padding: 8 }}
-        placeholder="Otsikko (valinnainen)"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-
       <textarea
         style={{ width: "100%", marginTop: 8, padding: 8, minHeight: 80 }}
-        placeholder="Kerro mitä pidit elokuvasta..."
+        placeholder="Kommentti:"
         value={body}
         onChange={(e) => setBody(e.target.value)}
       />
