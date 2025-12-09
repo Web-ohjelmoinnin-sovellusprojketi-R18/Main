@@ -52,3 +52,12 @@ CREATE TABLE IF NOT EXISTS group_members (
     user_id INTEGER REFERENCES account(id) ON DELETE CASCADE,
     UNIQUE(group_id, user_id)
 );
+
+CREATE TABLE IF NOT EXISTS join_requests (
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES account(id) ON DELETE CASCADE,
+    status VARCHAR(20) DEFAULT 'pending', -- pending, accepted, rejected
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(group_id, user_id)
+);
