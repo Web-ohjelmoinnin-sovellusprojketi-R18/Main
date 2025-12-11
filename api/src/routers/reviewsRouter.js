@@ -1,24 +1,27 @@
-// api/src/routers/reviewsRouter.js
 import express from "express";
 import db from "../database.js";
 import auth from "../middleware/auth.js";
 
 const reviewsRouter = express.Router();
 
-// HAE ARVOSTELUT TIETYLLE ELOKUVAN ID:LLE
 reviewsRouter.get("/movie/:movieId", async (req, res) => {
   const { movieId } = req.params;
 
   try {
     const result = await db.query(
-      `SELECT r.id, r.rating, r.title, r.body, r.created_at,
-              u.email AS author
+      `SELECT r.id,
+              r.rating,
+              r.title,
+              r.body,
+              r.created_at,
+              a.email AS author
        FROM reviews r
-       JOIN users u ON u.id = r.user_id
+       JOIN account a ON a.id = r.user_id
        WHERE r.movie_id = $1
        ORDER BY r.created_at DESC`,
       [movieId]
     );
+
     res.json(result.rows);
   } catch (err) {
     console.error("ERROR fetching reviews:", err);
@@ -26,7 +29,6 @@ reviewsRouter.get("/movie/:movieId", async (req, res) => {
   }
 });
 
-// LISÄÄ TAI PÄIVITÄ ARVOSTELU (vain kirjautunut user)
 reviewsRouter.post("/movie/:movieId", auth, async (req, res) => {
   const { movieId } = req.params;
   const { rating, title, body } = req.body;
@@ -52,16 +54,17 @@ reviewsRouter.post("/movie/:movieId", auth, async (req, res) => {
   }
 });
 
-// HAE KOMMENTIT YHDELLE ARVOSTELULLE
 reviewsRouter.get("/:reviewId/comments", async (req, res) => {
   const { reviewId } = req.params;
 
   try {
     const result = await db.query(
-      `SELECT c.id, c.body, c.created_at,
-              u.email AS author
+      `SELECT c.id,
+              c.body,
+              c.created_at,
+              a.email AS author
        FROM comments c
-       JOIN users u ON u.id = c.user_id
+       JOIN account a ON a.id = c.user_id
        WHERE c.review_id = $1
        ORDER BY c.created_at ASC`,
       [reviewId]
@@ -74,7 +77,6 @@ reviewsRouter.get("/:reviewId/comments", async (req, res) => {
   }
 });
 
-// LISÄÄ KOMMENTTI (vain kirjautunut user)
 reviewsRouter.post("/:reviewId/comments", auth, async (req, res) => {
   const { reviewId } = req.params;
   const { body } = req.body;
