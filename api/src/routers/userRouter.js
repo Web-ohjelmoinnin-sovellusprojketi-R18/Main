@@ -2,6 +2,7 @@ import pool from '../database.js';
 import { Router } from 'express';
 import { hash, compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import authMiddleware from "../middleware/auth.js";
 
 const router = Router();
 const { sign } = jwt;
@@ -118,6 +119,23 @@ router.post('/signin', (req, res, next) => {
             });
         }
     );
+});
+
+router.delete("/delete", authMiddleware, async (req, res, next) => {
+    const userId = req.user.id;
+
+    try {
+        await pool.query("DELETE FROM group_members WHERE user_id = $1", [userId]);
+
+        await pool.query("DELETE FROM groups WHERE owner_id = $1", [userId]);
+
+        await pool.query("DELETE FROM account WHERE id = $1", [userId]);
+
+        res.json({ message: "Käyttäjätili poistettu onnistuneesti" });
+
+    } catch (err) {
+        next(err);
+    }
 });
 
 export default router;

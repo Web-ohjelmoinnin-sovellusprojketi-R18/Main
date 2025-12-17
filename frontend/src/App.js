@@ -1,16 +1,12 @@
-// frontend/src/App.js
-
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Auth from "./components/Auth";
 import Groups from "./components/Groups";
 import Movies from "./components/Movies";
 import GroupPage from "./components/GroupPage";
 
 function App() {
-    // Token luetaan kun sovellus käynnistyy
-    const [token, setToken] = useState(localStorage.getItem("token") || null);
+    const [token, setToken] = useState(localStorage.getItem("token"));
 
     return (
         <Router>
@@ -18,33 +14,18 @@ function App() {
                 <h1>Elokuvasovellus</h1>
 
                 <Routes>
-                    {/* ----------------------------- */}
-                    {/* Etusivu / Dashboard           */}
-                    {/* ----------------------------- */}
                     <Route
                         path="/"
                         element={
                             <>
-                                {/* Rekisteröinti & kirjautuminen */}
-                                <Auth token={token} setToken={setToken} />
-
-                                {/* Ryhmät näkyvät kirjautuneelle käyttäjälle */}
-                                <Groups token={token} />
-
-                                {/* Elokuvahaku + Nyt elokuvissa + Arvostelut */}
-                                <Movies />
+                            <Auth token={token} setToken={setToken} />
+                            <Groups token={token} />
+                            <Movies />
                             </>
-                        }
-                    />
-
-                    {/* ----------------------------- */}
-                    {/* Ryhmäsivu                     */}
-                    {/* ----------------------------- */}
-                    <Route
-                        path="/group/:groupId"
-                        element={<GroupPage token={token} />}
-                    />
-                </Routes>
+                        } />
+                        
+                        <Route path="/group/:groupId" element={<GroupPage token={token} />} />
+                    </Routes>
             </div>
         </Router>
     );
