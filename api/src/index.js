@@ -1,13 +1,16 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
+
 import movieRouter from "./routers/movieRouter.js";
 import userRouter from "./routers/userRouter.js";
+import groupRouter from "./routers/groupRouter.js";       
+import reviewsRouter from "./routers/reviewsRouter.js";   
 import authMiddleware from "./middleware/auth.js";
 import groupRouter from "./routers/groupRouter.js";
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -15,6 +18,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/auth", userRouter);
 app.use("/api/movies", movieRouter);
+app.use("/api/groups", groupRouter);      
+app.use("/api/reviews", reviewsRouter); 
 app.use("/api/groups", authMiddleware, groupRouter);
 
 app.use((err, req, res, next) => {
