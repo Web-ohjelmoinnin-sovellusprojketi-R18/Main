@@ -11,7 +11,6 @@ function Comments({ reviewId }) {
     try {
       setLoading(true);
       const res = await fetch(`/api/reviews/${reviewId}/comments`);
-      if (!res.ok) throw new Error("Haku epäonnistui");
       const data = await res.json();
       setComments(data || []);
     } catch (err) {
@@ -92,10 +91,32 @@ function Comments({ reviewId }) {
   );
 }
 
-export default function ReviewList({ reviews }) {
-  if (!reviews || reviews.length === 0) {
-    return <div>Ei vielä arvosteluja </div>;
-  }
+export default function ReviewList({ movieId, refreshKey = 0 }) {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadReviews = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/reviews/movie/${movieId}`);
+      const data = await res.json();
+      console.log("GET reviews for movie", movieId, data); // debug
+      setReviews(data || []);
+    } catch (err) {
+      console.error(err);
+      setReviews([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (movieId) loadReviews();
+  }, [movieId, refreshKey]);
+
+  if (!movieId) return null;
+  if (loading) return <div>Ladataan arvosteluja...</div>;
+  if (reviews.length === 0) return <div>Ei vielä arvosteluja</div>;
 
   return (
     <div>

@@ -22,10 +22,11 @@ reviewsRouter.get("/movie/:movieId", async (req, res) => {
       [movieId]
     );
 
-    res.json(result.rows);
+    console.log("GET REVIEWS movieId =", movieId, "=>", result.rows);
+    return res.json(result.rows);
   } catch (err) {
     console.error("ERROR fetching reviews:", err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -33,6 +34,8 @@ reviewsRouter.post("/movie/:movieId", auth, async (req, res) => {
   const { movieId } = req.params;
   const { rating, title, body } = req.body;
   const userId = req.user.id;
+
+  console.log("SAVE REVIEW =>", { movieId, userId, rating, title, body });
 
   try {
     const result = await db.query(
@@ -47,10 +50,10 @@ reviewsRouter.post("/movie/:movieId", auth, async (req, res) => {
       [movieId, userId, rating, title, body]
     );
 
-    res.json(result.rows[0]);
+    return res.json(result.rows[0]);
   } catch (err) {
     console.error("ERROR saving review:", err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -70,10 +73,11 @@ reviewsRouter.get("/:reviewId/comments", async (req, res) => {
       [reviewId]
     );
 
-    res.json(result.rows);
+    console.log("GET COMMENTS reviewId =", reviewId, "=>", result.rows);
+    return res.json(result.rows);
   } catch (err) {
     console.error("ERROR fetching comments:", err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -90,10 +94,10 @@ reviewsRouter.post("/:reviewId/comments", auth, async (req, res) => {
       [reviewId, userId, body]
     );
 
-    res.json(result.rows[0]);
+    return res.json(result.rows[0]);
   } catch (err) {
     console.error("ERROR saving comment:", err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: err.message });
   }
 });
 

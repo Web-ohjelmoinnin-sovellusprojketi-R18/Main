@@ -9,7 +9,7 @@ export default function Movies() {
   const [results, setResults] = useState([]);
   const [nowPlaying, setNowPlaying] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [reviewsRefresh, setReviewsRefresh] = useState(0); 
+  const [reviewsRefresh, setReviewsRefresh] = useState(0);
 
   const searchMovies = async () => {
     const res = await fetch(
@@ -27,7 +27,7 @@ export default function Movies() {
 
   const openReviews = (movie) => {
     setSelectedMovie(movie);
-    setReviewsRefresh(0);
+    setReviewsRefresh((p) => p + 1);
   };
 
   return (
@@ -51,8 +51,8 @@ export default function Movies() {
       <button onClick={searchMovies}>Hae</button>
 
       {results.map((m) => (
-        <div key={m.id}>
-          <p>{m.title}</p>
+        <div key={m.id} style={{ marginBottom: 8 }}>
+          <p style={{ margin: 0 }}>{m.title}</p>
           <button onClick={() => openReviews(m)}>
             Näytä arvostelut & kommentit
           </button>
@@ -63,8 +63,8 @@ export default function Movies() {
       <button onClick={fetchNowPlaying}>Hae elokuvat</button>
 
       {nowPlaying.map((m) => (
-        <div key={m.id}>
-          <p>{m.title}</p>
+        <div key={m.id} style={{ marginBottom: 8 }}>
+          <p style={{ margin: 0 }}>{m.title}</p>
           <button onClick={() => openReviews(m)}>
             Näytä arvostelut & kommentit
           </button>
@@ -79,9 +79,7 @@ export default function Movies() {
 
           <ReviewForm
             movieId={selectedMovie.id}
-            onReviewSaved={() =>
-              setReviewsRefresh((prev) => prev + 1)
-            }
+            onSaved={() => setReviewsRefresh((prev) => prev + 1)}
           />
 
           <ReviewList

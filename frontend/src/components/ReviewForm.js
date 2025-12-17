@@ -8,7 +8,6 @@ export default function ReviewForm({ movieId, existingReview, onSaved }) {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -24,7 +23,7 @@ export default function ReviewForm({ movieId, existingReview, onSaved }) {
     setError("");
 
     if (!token) {
-      setError("Sinun täytyy olla kirjautuneena lähettääksesi arvostelun.");
+      setError("Et ole kirjautunut.");
       return;
     }
 
@@ -42,24 +41,20 @@ export default function ReviewForm({ movieId, existingReview, onSaved }) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          rating,
-          title,
-          body,
-        }),
+        body: JSON.stringify({ rating, title, body }),
       });
 
+      const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Tallennus epäonnistui");
+        throw new Error(data.error || data.message || "Tallennus epäonnistui");
       }
 
       setRating(0);
       setTitle("");
       setBody("");
 
-      const saved = await res.json();
-      onSaved && onSaved(saved);
+      if (onSaved) onSaved(data);
     } catch (err) {
       console.error(err);
       setError(err.message);
@@ -79,11 +74,7 @@ export default function ReviewForm({ movieId, existingReview, onSaved }) {
         onChange={(e) => setBody(e.target.value)}
       />
 
-      {error && (
-        <div style={{ color: "red", marginTop: 4 }}>
-          {error}
-        </div>
-      )}
+      {error && <div style={{ color: "red", marginTop: 4 }}>{error}</div>}
 
       <button
         type="submit"
@@ -99,4 +90,3 @@ export default function ReviewForm({ movieId, existingReview, onSaved }) {
     </form>
   );
 }
-
