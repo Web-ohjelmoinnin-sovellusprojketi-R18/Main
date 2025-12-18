@@ -17,10 +17,6 @@ export default function Movies() {
     );
     const data = await res.json();
     setResults(data.results || []);
-
-  const searchMovies = async () => {
-    const res = await fetch(`/api/movies/search?name=${name}&genre=${genre}&year=${year}`);
-    setResults((await res.json()).results || []);
   };
 
   const fetchNowPlaying = async () => {
@@ -31,8 +27,7 @@ export default function Movies() {
 
   const openReviews = (movie) => {
     setSelectedMovie(movie);
-    setReviewsRefresh((p) => p + 1);
-    setNowPlaying((await res.json()).results || []);
+    setReviewsRefresh((prev) => prev + 1);
   };
 
   return (
@@ -63,12 +58,6 @@ export default function Movies() {
           </button>
         </div>
       ))}
-      <input placeholder="Nimi" value={name} onChange={e => setName(e.target.value)} />
-      <input placeholder="Genre" value={genre} onChange={e => setGenre(e.target.value)} />
-      <input placeholder="Julkaisuvuosi" value={year} onChange={e => setYear(e.target.value)} />
-      <button onClick={searchMovies}>Hae</button>
-
-      {results.map(m => <p key={m.id}>{m.title}</p>)}
 
       <h2>Nyt elokuvissa Suomessa</h2>
       <button onClick={fetchNowPlaying}>Hae elokuvat</button>
@@ -99,9 +88,6 @@ export default function Movies() {
           />
         </div>
       )}
-      {nowPlaying.map(m => <p key={m.id}>{m.title}</p>)}
-
-      <hr />
     </>
   );
 }
