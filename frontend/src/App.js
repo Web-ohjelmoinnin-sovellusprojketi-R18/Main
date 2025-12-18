@@ -4,6 +4,7 @@ import Auth from "./components/Auth";
 import Groups from "./components/Groups";
 import Movies from "./components/Movies";
 import GroupPage from "./components/GroupPage";
+import "./App.css";
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem("token"));
