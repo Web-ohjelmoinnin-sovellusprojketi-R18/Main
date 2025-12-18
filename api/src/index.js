@@ -7,7 +7,6 @@ import userRouter from "./routers/userRouter.js";
 import groupRouter from "./routers/groupRouter.js";       
 import reviewsRouter from "./routers/reviewsRouter.js";   
 import authMiddleware from "./middleware/auth.js";
-import groupRouter from "./routers/groupRouter.js";
 
 const app = express();
 const port = process.env.PORT || 3001;

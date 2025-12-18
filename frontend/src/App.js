@@ -20,7 +20,7 @@ function App() {
                             <>
                             <Auth token={token} setToken={setToken} />
                             <Groups token={token} />
-                            <Movies />
+                            <Movies token={token}/>
                             </>
                         } />
                         
